@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <unistd.h>
 
+#include "includes/calculations.cpp"
 
 /*
 1. The world is loaded with
