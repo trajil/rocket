@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include <unistd.h>
 
-#include "includes/calculations.cpp"
+#include "include/calculations.cpp"
 
 /*
 1. The world is loaded with
@@ -66,7 +66,6 @@ const double gravity_moon = 1.625;
 const double gravity_earth = 9.81; 
 
 
-
 //texts and graphics
 std::string graphic_rocket_start = "       |\n      / \\\n     / _ \\\n    |.o '.|\n    |'._.'|\n    |     |\n  ,'|  |  |  |`.\n /  |  |  |  |  \\\n|,-'--|--'-.| t.r.\n";
 std::string welcome_text = "Hello, rocketman! Choose a scenario you wanna fly:\n1. Launch to orbit moon\n2. Launch to orbit earth\n3. Landing on moon\n4. Landing on earth\n";
@@ -90,6 +89,7 @@ bool askForReplay()
 // display: start of the game
 void displayScenarioParameters(double altitude_start, double altitude_goal, double speed_start, double speed_goal, double fuel, double planet_mass, std::string planet, std::string graphic_planet) 
 {
+    std::cout << adden(21,20) << std::endl;
     std::cout << graphic_planet;
     std::cout << "\nScenario Parameters:\n";
     std::cout << "Planet: " << planet << "\n";   
