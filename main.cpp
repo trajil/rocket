@@ -3,67 +3,7 @@
 #include <cstdlib>
 #include <unistd.h>
 
-#include "include/engine.h"
-
-/*
-1. The world is loaded with
-    variables:
-        altitude_start, altitude_goal, speed_start, speed_goal, fuel and gravity (depending on altitude and planet_mass);
-    constants:
-        time_count(0.1 sec), planet_mass;
-    (player_inputs):
-        thrust,
-2. The player chooses one of the scenarios (launch_to_orbit_planet, landing_planet);
-    - launch_to_orbit_moon: altitude_start: 0, altitude_goal: 150, speed_start: 0,speed_goal: 50,  fuel: 2000, planet_mass: 1;
-    - launch_to_orbit_earth: altitude_start: 0, altitude_goal: 150, speed_start: 0,speed_goal: 50, fuel: 2000, planet_mass: 6;
-    - landing_moon: altitude_start: 150, altitude_goal: 0, speed_start: 10,speed_goal: <= 2, fuel: 200, planet_mass: 1;
-    - landing_earth: altitude_start: 150, altitude_goal: 0, speed_start: 10,speed_goal: <= 2, fuel: 200, planet_mass: 6;
-
-    The according scenario is loaded;
-3. Time starts ticking: every round length is equals time_count;
-4. Each round consists of a loop:
-    -Check for altitude and speed, 
-        if current altitute != goal: 
-            1) speed is subtracted from alt (alt from previous round - speed from previous round)
-            2) current gravity is calculated (gravity constant at new altitude)
-            3) speed is altered by gravity (speed + gravity)
-            4) the player chooses the thrust, a check is performed to see if the thrust is acceptable:
-                if acceptable, then: 
-                    thrust gets subtracted from the fuel (fuel - thrust)
-                if not, then:
-                    thrust gets limited to a set value or remaining fuel - the lower number gets taken;
-                
-                after that 1/10 thrust gets subtracted from speed (speed - thrust/10)
-            5) repeat;
-        if current altitute == goal, speed is checked:
-            if speed == goal_speed_range then the player wins;
-            else the player loses;
-5. The game ends;
-
-
-  To-Do:
-
-    - speed: should be only positive (V)
-    - thrust: check for acceptability (V)
-    - altitude_goal: full check -> launch_scenario: >= 150; landing_scenario: >= 0 (V)
-    - altitude_start: should not be performed before round_1 (V)
-    - gravity: needs altitude adjustement (X)
-    - floor needed (V)
-    - air resistance (V)
-
-    - cleaning code (XXX)
-    - including ideas (XXX)
-    - 
-    - fine tuning the parameters... (VXX)
-
-*/
-
-// Constants
-const double time_count = 1;
-const double planet_mass_moon = 1; // work in progress...
-const double planet_mass_earth = 6; // work in progress...
-const double gravity_moon = 1.625; 
-const double gravity_earth = 9.81; 
+#include "include/engine.cpp"
 
 
 //texts and graphics
@@ -89,7 +29,6 @@ bool askForReplay()
 // display: start of the game
 void displayScenarioParameters(double altitude_start, double altitude_goal, double speed_start, double speed_goal, double fuel, double planet_mass, std::string planet, std::string graphic_planet) 
 {
-    std::cout << adden(21,20) << std::endl;
     std::cout << graphic_planet;
     std::cout << "\nScenario Parameters:\n";
     std::cout << "Planet: " << planet << "\n";   
@@ -155,15 +94,7 @@ void runScenario(double altitude_start, double altitude_goal, double speed_start
         std::cout << "---------------" << std::endl;
 
         //floor check
-        if  ( altitude <= 0)
-            {
-            altitude = 0;
-            speed = 0;
-            }
-            else if ( altitude > 0 )
-            {
-            speed = speed * air_resist + gravity * time_count;
-            }
+        floor(altitude, speed, air_resist);
 
         //throttle and fuel control
         if  ( thrust <= fuel && thrust >= 0) 
